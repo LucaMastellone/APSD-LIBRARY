@@ -1,26 +1,21 @@
 package apsd.interfaces.containers.base;
 
-// import apsd.interfaces.containers.iterators.BackwardIterator;
-// import apsd.interfaces.containers.iterators.ForwardIterator;
-// import apsd.interfaces.traits.Predicate;
+import apsd.interfaces.containers.iterators.BackwardIterator;
+import apsd.interfaces.containers.iterators.ForwardIterator;
+import apsd.interfaces.traits.Predicate;
 
 /** Interface: TraversableContainer con supporto all'iterazione. */
-public interface IterableContainer<T, Data> {
-  // Must extend TraversableContainer.
-  // T must have a recursive bound.
+public interface IterableContainer<T extends IterableContainer<T, Data>, Data> extends TraversableContainer<T, Data> {
+    ForwardIterator<Data> FIterator();
+    BackwardIterator<Data> BIterator();
 
-  /* ************************************************************************ */
-  /* Specific member functions of IterableContainer                           */
-  /* ************************************************************************ */
+    @Override
+    default boolean TraverseForward(Predicate<Data> fun) {
+        return fun != null && FIterator().ForEachForward(fun);
+    }
 
-  // FIterator
-  // BIterator
-
-  /* ************************************************************************ */
-  /* Override specific member functions from TraversableContainer             */
-  /* ************************************************************************ */
-
-  // TraverseForward
-  // TraverseBackward
-
+    @Override
+    default boolean TraverseBackward(Predicate<Data> fun) {
+        return fun != null && BIterator().ForEachBackward(fun);
+    }
 }

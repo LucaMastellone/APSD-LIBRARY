@@ -1,35 +1,28 @@
 package apsd.interfaces.containers.base;
 
-// import apsd.classes.utilities.Natural;
-// import apsd.interfaces.traits.Reallocable;
+import apsd.classes.utilities.Natural;
+import apsd.interfaces.traits.Reallocable;
 
 /** Interface: ClearableContainer che è anche Reallocable. */
-public interface ReallocableContainer<T> {
-  // Must extend ClearableContainer and Reallocable.
-  // T must have a recursive bound.
+public interface ReallocableContainer<T extends ReallocableContainer<T>> extends ClearableContainer<T>, Reallocable {
+  double GROW_FACTOR = 2.0;
+  double SHRINK_FACTOR = 2.0;
 
-  /* ************************************************************************ */
-  /* Specific member functions of ReallocableContainer                        */
-  /* ************************************************************************ */
+  Natural Capacity();
 
-  double GROW_FACTOR = 2.0; // Must be strictly greater than 1.
-  double SHRINK_FACTOR = 2.0; // Must be strictly greater than 1.
+  default void Grow() { Grow(Natural.ONE); }
 
-  // Capacity
-  // Grow
-  // Grow
-  // Shrink
+  default void Grow(Natural dim) {
+    long size = Math.addExact(Size().ToLong(), dim.ToLong());
+    if (size > Long.MAX_VALUE / 2) throw new ArithmeticException("Capacity overflow");
+    Realloc(Natural.Of(size * 2));
+  }
 
-  /* ************************************************************************ */
-  /* Override specific member functions from Container                        */
-  /* ************************************************************************ */
+  default void Shrink() { Realloc(Natural.Of(Capacity().ToLong() / 2L)); }
 
-  // Size
+  @Override
+  default Natural Size() { return Capacity(); }
 
-  /* ************************************************************************ */
-  /* Override specific member functions from ClearableContainer               */
-  /* ************************************************************************ */
-
-  // Clear
-
+  @Override
+  default void Clear() { Realloc(Natural.ZERO); }
 }

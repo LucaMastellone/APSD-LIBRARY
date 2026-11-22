@@ -1,16 +1,26 @@
 package apsd.interfaces.containers.base;
 
+import java.util.ArrayList;
+
 /** Interface: Container con supporto all'inserimento di un dato. */
-public interface InsertableContainer<T, Data> {
-  // Must extend Container.
-  // T must have a recursive bound.
+public interface InsertableContainer<T extends InsertableContainer<T, Data>, Data> extends Container<T> {
+    boolean Insert(Data dat);
 
-  /* ************************************************************************ */
-  /* Specific member functions of InsertableContainer                         */
-  /* ************************************************************************ */
+    default boolean AllInserted(TraversableContainer<?, Data> con) {
+        if (con == null) return false;
+        ArrayList<Data> snapshot = new ArrayList<>();
+        con.TraverseForward(dat -> { snapshot.add(dat); return false; });
+        boolean result = true;
+        for (Data dat : snapshot) result = Insert(dat) & result;
+        return result;
+    }
 
-  // Insert
-  // AllInserted
-  // SomeInserted
-
+    default boolean SomeInserted(TraversableContainer<?, Data> con) {
+        if (con == null) return false;
+        ArrayList<Data> snapshot = new ArrayList<>();
+        con.TraverseForward(dat -> { snapshot.add(dat); return false; });
+        boolean result = false;
+        for (Data dat : snapshot) result = Insert(dat) | result;
+        return result;
+    }
 }

@@ -1,32 +1,28 @@
 package apsd.interfaces.containers.base;
 
-// import apsd.classes.utilities.Natural;
+import apsd.classes.utilities.Natural;
 
 /** Interface: ReallocableContainer che è espandibile e riducibile. */
-public interface ResizableContainer<T> {
-  // T must have a recursive bound.
-  // Must extend ReallocableContainer.
+public interface ResizableContainer<T extends ResizableContainer<T>> extends ReallocableContainer<T> {
+  double THRESHOLD_FACTOR = 2.0;
 
-  /* ************************************************************************ */
-  /* Specific member functions of ResizableContainer                          */
-  /* ************************************************************************ */
+  void Expand(Natural num);
+  void Reduce(Natural num);
+  default void Expand() { Expand(Natural.ONE); }
+  default void Reduce() { Reduce(Natural.ONE); }
 
-  double THRESHOLD_FACTOR = 2.0; // Must be strictly greater than 1.
+  @Override
+  Natural Size();
 
-  // Expand
-  // Reduce
+  @Override
+  default void Grow(Natural num) {
+    long size = Math.addExact(Size().ToLong(), num.ToLong());
+    if (size >= Capacity().ToLong()) ReallocableContainer.super.Grow(num);
+  }
 
-  /* ************************************************************************ */
-  /* Override specific member functions from Container                        */
-  /* ************************************************************************ */
-
-  // Size
-
-  /* ************************************************************************ */
-  /* Override specific member functions from ReallocableContainer             */
-  /* ************************************************************************ */
-
-  // Grow
-  // Shrink
-
+  @Override
+  default void Shrink() {
+    if (Size().ToLong() <= Capacity().ToLong() / 4L)
+      ReallocableContainer.super.Shrink();
+  }
 }
