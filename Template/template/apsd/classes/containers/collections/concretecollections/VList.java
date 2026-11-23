@@ -1,14 +1,14 @@
 package apsd.classes.containers.collections.concretecollections;
 
-// import apsd.classes.containers.collections.concretecollections.bases.VChainBase;
-// import apsd.classes.utilities.Natural;
-// import apsd.interfaces.containers.base.TraversableContainer;
-// import apsd.interfaces.containers.collections.List;
-// import apsd.interfaces.containers.iterators.MutableBackwardIterator;
-// import apsd.interfaces.containers.iterators.MutableForwardIterator;
+import apsd.classes.containers.collections.concretecollections.bases.VChainBase;
+import apsd.classes.utilities.Natural;
+import apsd.interfaces.containers.base.TraversableContainer;
+import apsd.interfaces.containers.collections.List;
+import apsd.interfaces.containers.iterators.MutableBackwardIterator;
+import apsd.interfaces.containers.iterators.MutableForwardIterator;
 
 /** Object: Concrete list implementation on (dynamic circular) vector. */
-public class VList<Data> {
+public class VList<Data> extends VChainBase<VList<Data>, Data> implements List<VList<Data>, Data> {
   // Must extend VChainBase.
   // Must implement List.
 
@@ -43,5 +43,13 @@ public class VList<Data> {
   /* ************************************************************************ */
 
   // InsertAt
+
+  public VList() { super(); }
+  public VList(TraversableContainer<?, Data> con) { super(con); }
+  @Override public VList<Data> Empty() { return new VList<>(); }
+  @Override public MutableForwardIterator<Data> FIterator() { return vec.FIterator(); }
+  @Override public MutableBackwardIterator<Data> BIterator() { return vec.BIterator(); }
+  @Override public void SetAt(Data dat, Natural pos) { vec.SetAt(dat, pos); }
+  @Override public void InsertAt(Data dat, Natural pos) { vec.InsertAt(dat, pos); }
 
 }

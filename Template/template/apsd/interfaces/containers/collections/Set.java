@@ -1,8 +1,8 @@
 package apsd.interfaces.containers.collections;
 
-// import apsd.interfaces.containers.base.TraversableContainer;
+import apsd.interfaces.containers.base.TraversableContainer;
 
-public interface Set<T, Data> {
+public interface Set<T extends Set<T, Data>, Data> extends Collection<T, Data> {
   // Must extend Collection.
   // T must have a recursive bound.
 
@@ -23,5 +23,9 @@ public interface Set<T, Data> {
   /* ************************************************************************ */
 
   // Intersection
+
+  default boolean IsEqual(Set<?, Data> other) { return IsEqual((TraversableContainer<?, Data>) other); }
+  @Override default boolean IsEqual(TraversableContainer<?, Data> other) { return Collection.super.IsEqual(other); }
+  @Override default void Intersection(Collection<?, Data> other) { Collection.super.Intersection(other); }
 
 }
